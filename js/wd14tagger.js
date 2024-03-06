@@ -1,6 +1,6 @@
-import { app } from "/scripts/app.js";
-import { ComfyWidgets } from "/scripts/widgets.js";
-import { api } from "/scripts/api.js";
+import { app } from "../../scripts/app.js";
+import { ComfyWidgets } from "../../scripts/widgets.js";
+import { api } from "../../scripts/api.js";
 
 class Pysssss {
 	constructor() {
@@ -104,7 +104,7 @@ app.registerExtension({
 
 				return r;
 			};
-		} else {
+		} /*else {
 			const getExtraMenuOptions = nodeType.prototype.getExtraMenuOptions;
 			nodeType.prototype.getExtraMenuOptions = function (_, options) {
 				const r = getExtraMenuOptions?.apply?.(this, arguments);
@@ -136,6 +136,6 @@ app.registerExtension({
 
 				return r;
 			};
-		}
+		}*/
 	},
 });

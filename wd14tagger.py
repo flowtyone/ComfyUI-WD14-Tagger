@@ -10,7 +10,7 @@ import sys
 import onnxruntime as ort
 from onnxruntime import InferenceSession
 from PIL import Image
-from server import PromptServer
+#from server import PromptServer
 from aiohttp import web
 from .pysssss import get_ext_dir, get_comfy_dir, download_to_file, update_node_status, wait_for_async, get_extension_config
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "comfy"))
@@ -29,7 +29,7 @@ defaults = {
 defaults.update(config.get("settings", {}))
 
 models_dir = get_ext_dir("models", mkdir=True)
-all_models = ("wd-v1-4-moat-tagger-v2", 
+all_models = ("wd-v1-4-moat-tagger-v2",
               "wd-v1-4-convnext-tagger-v2", "wd-v1-4-convnext-tagger",
               "wd-v1-4-convnextv2-tagger-v2", "wd-v1-4-vit-tagger-v2")
 
@@ -118,31 +118,31 @@ async def download_model(model, client_id, node):
     return web.Response(status=200)
 
 
-@PromptServer.instance.routes.get("/pysssss/wd14tagger/tag")
-async def get_tags(request):
-    if "filename" not in request.rel_url.query:
-        return web.Response(status=404)
-
-    type = request.query.get("type", "output")
-    if type not in ["output", "input", "temp"]:
-        return web.Response(status=400)
-
-    target_dir = get_comfy_dir(type)
-    image_path = os.path.abspath(os.path.join(
-        target_dir, request.query.get("subfolder", ""), request.query["filename"]))
-    c = os.path.commonpath((image_path, target_dir))
-    if os.path.commonpath((image_path, target_dir)) != target_dir:
-        return web.Response(status=403)
-
-    if not os.path.isfile(image_path):
-        return web.Response(status=404)
-
-    image = Image.open(image_path)
-
-    models = get_installed_models()
-    model = next(models, defaults["model"])
-
-    return web.json_response(await tag(image, model, client_id=request.rel_url.query.get("clientId", ""), node=request.rel_url.query.get("node", "")))
+# @PromptServer.instance.routes.get("/pysssss/wd14tagger/tag")
+# async def get_tags(request):
+#     if "filename" not in request.rel_url.query:
+#         return web.Response(status=404)
+#
+#     type = request.query.get("type", "output")
+#     if type not in ["output", "input", "temp"]:
+#         return web.Response(status=400)
+#
+#     target_dir = get_comfy_dir(type)
+#     image_path = os.path.abspath(os.path.join(
+#         target_dir, request.query.get("subfolder", ""), request.query["filename"]))
+#     c = os.path.commonpath((image_path, target_dir))
+#     if os.path.commonpath((image_path, target_dir)) != target_dir:
+#         return web.Response(status=403)
+#
+#     if not os.path.isfile(image_path):
+#         return web.Response(status=404)
+#
+#     image = Image.open(image_path)
+#
+#     models = get_installed_models()
+#     model = next(models, defaults["model"])
+#
+#     return web.json_response(await tag(image, model, client_id=request.rel_url.query.get("clientId", ""), node=request.rel_url.query.get("node", "")))
 
 
 class WD14Tagger:
